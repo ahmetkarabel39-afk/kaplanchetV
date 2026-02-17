@@ -8,8 +8,6 @@ const { v4: uuidv4 } = require('uuid');
 const multer = require('multer'); // Dosya yükleme için
 const mongoose = require('mongoose');
 
-// Vercel/Hosting uyumluluğu için process.cwd() kullanımı
-// const DB_PATH = path.join(process.cwd(), 'data', 'db.json'); // Artık kullanılmıyor
 const JWT_SECRET = process.env.JWT_SECRET || 'dev_secret_please_change';
 
 // --- MONGODB AYARLARI ---
