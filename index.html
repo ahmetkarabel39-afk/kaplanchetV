@@ -1,0 +1,459 @@
+<!doctype html>
+<html lang="tr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1, user-scalable=no" />
+    <title>Key Panel - Kaplan Loader VIP</title>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/style.css" />
+    <style>
+      /* Key Oluşturma Gün Sayısı Özel Tasarım */
+      #daysInput {
+        background: rgba(16, 185, 129, 0.1) !important;
+        border-color: rgba(16, 185, 129, 0.3) !important;
+        color: #10b981 !important;
+        font-weight: 700;
+        text-align: center;
+        font-size: 16px;
+        width: 100px !important;
+      }
+      #daysInput:focus {
+        box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.25) !important;
+      }
+
+      /* Arama Kutusu İkonu */
+      .searchInput {
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='rgba(148,163,184,0.5)'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z'%3E%3C/path%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position: 12px center;
+        background-size: 18px;
+        padding-left: 40px !important;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="app">
+      <div id="toast-container"></div>
+      <!-- Giriş Ekranı -->
+      <div class="loginScreen" id="loginCard">
+        <div class="loginBg">
+          <div class="loginBg__grid"></div>
+        </div>
+        <div class="announcement-bar" style="position: absolute; top: 0; left: 0; width: 100%; z-index: 20;">
+          <div class="marquee-content announcement-text">Sisteme Hoşgeldiniz!</div>
+        </div>
+        <div class="loginCard">
+          <div style="text-align: center;">
+            <div class="status-badge"><span class="status-dot"></span>Sistem Aktif</div>
+          </div>
+          <div class="loginCard__logo">
+            <span class="logoMark">K</span>
+            <h1 class="logoText">Kaplan Loader VIP</h1>
+            <p class="logoSub">Key Yönetim Paneli</p>
+          </div>
+          <form class="loginForm" id="loginForm" onsubmit="return false">
+            <div class="inputGroup">
+              <label for="username">Kullanıcı adı</label>
+              <input id="username" type="text" placeholder="Kullanıcı adınızı girin" autocomplete="username" />
+            </div>
+            <div class="inputGroup">
+              <label for="password">Şifre</label>
+              <input id="password" type="password" placeholder="••••••••" autocomplete="current-password" />
+            </div>
+            <div id="loginError" class="loginError"></div>
+            <button type="submit" id="loginBtn" class="btn btnPrimary">Giriş Yap</button>
+          </form>
+          
+          <!-- Founders / Credits Section -->
+          <div class="founders-container">
+            <div class="founders-title">Geliştirici Ekip</div>
+            <div class="founders-list">
+              <span class="founder-tag" style="animation-delay: 0.1s">QUARTZ</span>
+              <span class="founder-tag" style="animation-delay: 0.2s">CARDCINS</span>
+              <span class="founder-tag" style="animation-delay: 0.3s">AXENTRA</span>
+            </div>
+        </div>
+      </div>
+    </div>
+
+      <!-- Ana Panel -->
+      <div class="panelScreen hidden" id="panelCard">
+        <header class="panelHeader">
+          <div class="panelHeader__brand">
+            <span class="logoMark sm">K</span>
+            <span class="panelHeader__title">Kaplan Loader VIP</span>
+          </div>
+          <div style="flex:1; display:flex; justify-content:center;">
+            <div id="liveClock" style="font-family:monospace; font-size:16px; color:var(--accent); font-weight:bold; background:rgba(0,0,0,0.3); padding:6px 12px; border-radius:8px; border:1px solid var(--border);">00:00:00</div>
+          </div>
+          <div style="display:flex; gap:10px; margin-right:16px; font-size:11px; color:var(--muted);">
+            <div id="sysUptime" title="Sunucu Açık Kalma Süresi" style="display:flex; align-items:center;">⚡ --</div>
+            <div style="display:flex; flex-direction:column; justify-content:center;">
+              <div id="sysRam" title="RAM Kullanımı">💾 -- MB</div>
+              <div class="ram-bar-container"><div id="ramBarFill" style="width:0%; height:100%; background:var(--accent); transition:width 0.5s;"></div></div>
+            </div>
+          </div>
+          <button id="refreshDataBtn" class="btn btnGhost" style="padding: 6px 10px; margin-right: 8px;" title="Verileri Yenile">🔄</button>
+          <button id="fullscreenBtn" class="btn btnGhost" style="padding: 6px 10px; margin-right: 8px;" title="Tam Ekran">⛶</button>
+          <button id="settingsBtn" class="btn btnGhost" style="padding: 6px 10px; margin-right: 16px;" title="Ayarlar">⚙️</button>
+          <div class="panelHeader__user">
+            <span id="displayName" class="userName"></span>
+            <span id="warningBadge" style="display:none; background:var(--danger); color:#fff; font-size:10px; padding:2px 6px; border-radius:4px; font-weight:bold;">UYARI</span>
+            <span id="role" class="userRole"></span>
+            <button id="logoutBtn" class="btn btnGhost">Çıkış</button>
+          </div>
+        </header>
+        <div class="announcement-bar">
+          <div class="marquee-content announcement-text">Sisteme Hoşgeldiniz!</div>
+        </div>
+
+        <main class="panelMain">
+          <div class="statsRow">
+            <div class="statCard"><span class="statLabel">Toplam Key</span><span id="statTotal" class="statValue">0</span></div>
+            <div class="statCard"><span class="statLabel">Aktif</span><span id="statActive" class="statValue">0</span></div>
+            <div class="statCard"><span class="statLabel">Hile Durumu</span><span id="cheatStatusDisplay" class="statValue" style="font-size: 16px;">--</span></div>
+          </div>
+
+          <!-- Hızlı İşlemler & Son Keyler -->
+          <div class="grid-2" style="margin-bottom: 24px;">
+            <div class="sectionCard" style="margin-bottom:0;">
+              <h3>⚡ Hızlı İşlemler</h3>
+              <div style="display:flex; gap:10px; flex-wrap:wrap;">
+                <button class="btn btnPrimary quickGenAction" data-days="1" style="flex:1;">+1 Günlük Key</button>
+                <button class="btn btnPrimary quickGenAction" data-days="7" style="flex:1; background:linear-gradient(135deg, #8b5cf6, #6366f1);">+1 Haftalık Key</button>
+                <button class="btn btnPrimary quickGenAction" data-days="30" style="flex:1; background:linear-gradient(135deg, #f59e0b, #d97706);">+1 Aylık Key</button>
+              </div>
+            </div>
+            <div class="sectionCard" style="margin-bottom:0;">
+              <h3>📋 Son Oluşturulanlar</h3>
+              <div id="lastKeysList" style="font-size:12px; font-family:monospace; color:var(--accent);">Yükleniyor...</div>
+            </div>
+          </div>
+
+          <!-- Grafik Alanı -->
+          <div class="sectionCard" style="margin-bottom: 24px; position: relative; height: 250px;">
+            <canvas id="keysChart"></canvas>
+          </div>
+
+          <div class="panelTabs">
+            <button class="panelTab active" data-tab="keys">Key Üret & Listele</button>
+            <button class="panelTab founderOnly" data-tab="account">Hesabım</button>
+            <button class="panelTab founderOnly" data-tab="founder">Kurucu Paneli</button>
+            <button class="panelTab founderOnly" data-tab="adduser">Kullanıcı Ekle</button>
+            <button class="panelTab founderOnly" data-tab="logs">Loglar</button>
+          </div>
+
+          <section class="panelContent active" id="tab-keys">
+            <div class="genSection">
+              <h2>Key Oluştur</h2>
+              <div class="genForm">
+                <div class="inputGroup inline">
+                  <label>Süre (Gün)</label>
+                  <div style="display:flex; flex-direction:column; gap:4px;">
+                    <input id="daysInput" type="number" min="1" value="1" />
+                    <div class="quick-buttons">
+                      <button class="quick-btn" onclick="document.getElementById('daysInput').value=1">1G</button>
+                      <button class="quick-btn" onclick="document.getElementById('daysInput').value=7">1H</button>
+                      <button class="quick-btn" onclick="document.getElementById('daysInput').value=30">1A</button>
+                    </div>
+                  </div>
+                </div>
+                <div class="inputGroup inline">
+                  <label>Adet</label>
+                  <input id="countInput" type="number" min="1" max="50" value="1" style="width: 70px; text-align: center; font-weight: bold;" />
+                </div>
+                <div class="inputGroup inline">
+                  <label>Prefix (Ön Ek)</label>
+                  <input id="prefixInput" type="text" value="KAPLANVIP" placeholder="KAPLANVIP" style="font-weight:bold; text-transform:uppercase;" />
+                  <label class="checkboxRow" style="margin-top:4px; font-size:11px;"><input type="checkbox" id="hideDaysInput"> Gün sayısını gizle</label>
+                </div>
+                <div class="inputGroup inline">
+                  <label>Cihaz Sınırı</label>
+                  <input id="maxDevicesInput" type="number" min="1" max="10" value="1" style="width: 70px; text-align: center; font-weight: bold;" />
+                </div>
+                <div class="inputGroup" style="flex: 1; min-width: 280px;">
+                  <label>Platform</label>
+                  <div class="custom-select-wrapper">
+                    <div class="custom-select" id="platformSelect">
+                        <div class="custom-select__trigger"><span>Android</span> <div class="arrow"></div></div>
+                        <div class="custom-select__options">
+                            <span class="custom-option selected" data-value="ANDROID">Android</span>
+                            <span class="custom-option" data-value="IOS">iOS</span>
+                            <span class="custom-option" data-value="EMU">Emulator</span>
+                        </div>
+                    </div>
+                    <input type="hidden" id="selectedPlatform" value="ANDROID">
+                  </div>
+                </div>
+                <div class="inputGroup inline" style="flex: 1; min-width: 150px;">
+                  <label>Müşteri Notu (Opsiyonel)</label>
+                  <input id="noteInput" type="text" placeholder="Örn: Ahmet - Discord" />
+                </div>
+                <button id="genBtn" class="btn btnPrimary">Oluştur</button>
+              </div>
+              <div id="genResultContainer" class="hidden" style="margin-top:16px;">
+                <textarea id="genResultArea" readonly style="width:100%; height:120px; background:rgba(0,0,0,0.3); border:1px solid var(--border); color:var(--accent); border-radius:8px; padding:10px; font-family:monospace; font-size:13px; resize:vertical;"></textarea>
+                <button id="copyAllBtn" class="btn btnGhost" style="width:100%; margin-top:8px;">Tümünü Kopyala</button>
+                <button id="whatsappShareBtn" class="btn btnPrimary" style="width:100%; margin-top:8px; background: #25D366; color: #fff;"><span style="margin-right:6px">📱</span>WhatsApp ile Paylaş</button>
+                <button id="telegramShareBtn" class="btn btnPrimary" style="width:100%; margin-top:8px; background: #0088cc; color: #fff;"><span style="margin-right:6px">✈️</span>Telegram ile Paylaş</button>
+              </div>
+            </div>
+            <div class="keysSection">
+              <div class="keysHeader">
+                <label class="checkboxRow" style="margin:0; padding:8px; background:rgba(255,255,255,0.05); border-radius:8px;" title="Tümünü Seç"><input type="checkbox" id="selectAllKeys"> Tümü</label>
+                <div style="display:flex; gap:8px;">
+                  <button class="filter-btn active" data-filter="all">Tümü</button>
+                  <button class="filter-btn" data-filter="active">Aktif</button>
+                  <button class="filter-btn" data-filter="expired">Süresi Dolan</button>
+                </div>
+                <input type="text" id="filterInput" class="searchInput" placeholder="Ara..." />
+                <select id="sortSelect" class="searchInput" style="flex: 0 0 auto; width: auto;">
+                  <option value="newest">En Yeni</option>
+                  <option value="oldest">En Eski</option>
+                </select>
+                <button id="exportTxtBtn" class="btn btnGhost" title="TXT Olarak İndir">TXT</button>
+                <button id="exportBtn" class="btn btnGhost">Dışa Aktar</button>
+              </div>
+              
+              <!-- Toplu İşlem Çubuğu (Gizli Başlar) -->
+              <div id="bulkActionBar" class="bulk-actions hidden">
+                <span id="selectedCount">0 seçildi</span>
+                <button id="bulkDeleteBtn" class="btn btn-danger btn-sm">🗑️ Sil</button>
+                <button id="bulkResetBtn" class="btn btnGhost btn-sm" style="background:var(--bgCard)">🔓 HWID Sıfırla</button>
+                <button id="bulkExtendBtn" class="btn btnPrimary btn-sm">⏳ +1 Gün Ekle</button>
+              </div>
+
+              <div id="keysList" class="keysList"></div>
+            </div>
+          </section>
+
+          <section class="panelContent founderPanel" id="tab-account">
+            <div class="sectionCard">
+              <h2>Profil Güncelle</h2>
+              <div class="inputGroup"><label>Yeni kullanıcı adı</label><input type="text" id="meUsername" placeholder="Opsiyonel" /></div>
+              <div class="inputGroup"><label>Yeni şifre</label><input id="mePassword" type="password" placeholder="Opsiyonel" /></div>
+              <div class="formRow"><button id="updateMeBtn" class="btn btnPrimary">Güncelle</button><span id="meMsg" class="formMsg"></span></div>
+            </div>
+          </section>
+
+          <section class="panelContent founderPanel" id="tab-adduser">
+            <div class="sectionCard founderOnly">
+              <h2>Yeni Kullanıcı Ekle</h2>
+              <div class="formGrid">
+                <div class="inputGroup"><label>Kullanıcı adı</label><input type="text" id="newUsername" placeholder="Örn: admin1" /></div>
+                <div class="inputGroup"><label>Şifre</label><input id="newPassword" type="password" placeholder="Şifre" /></div>
+                <div class="inputGroup"><label>Hesap Süresi (Gün)</label><input id="newAccountDuration" type="number" min="1" placeholder="Örn: 30" /></div>
+                <div class="inputGroup"><label>Max Key Süresi (Gün)</label><input id="newMaxDays" type="number" min="1" placeholder="Örn: 7" /></div>
+                <div class="inputGroup"><label>Max Key Adedi</label><input id="newMaxKeys" type="number" min="1" placeholder="Örn: 30" /></div>
+              </div>
+              <div class="roleSelector">
+                <label class="roleOption">
+                  <input type="radio" name="role" value="admin" checked />
+                  <span class="roleBox"><span class="roleIcon">👤</span>Admin</span>
+                </label>
+                <label class="roleOption">
+                  <input type="radio" name="role" value="manager" />
+                  <span class="roleBox"><span class="roleIcon">🔧</span>Yönetici</span>
+                </label>
+              </div>
+              <label class="checkboxRow"><input type="checkbox" id="newCanRevoke" /> Key iptal yetkisi ver</label>
+              <button id="createUserBtn" class="btn btnPrimary">Kullanıcı Oluştur</button>
+              <div id="founderMsg" class="formMsg"></div>
+            </div>
+            <div class="sectionCard">
+              <h3>Kullanıcılar</h3>
+              <div style="margin-bottom:12px;">
+                <input type="text" id="userSearchInput" placeholder="Kullanıcı ara..." class="searchInput" style="width:100%">
+              </div>
+              <div id="usersList" class="usersList"></div>
+            </div>
+          </section>
+
+          <section class="panelContent founderPanel" id="tab-founder">
+            <div class="sectionCard">
+              <!-- Quartz Özel Alanı -->
+              <div id="ownerZone" class="hidden" style="margin-bottom: 24px; border: 1px solid var(--danger); background: rgba(239, 68, 68, 0.05); padding: 16px; border-radius: 12px;">
+                <h3 style="color: var(--danger); display: flex; align-items: center; gap: 8px;">
+                  <span style="font-size: 20px;">🛡️</span> GÜVENLİK MERKEZİ
+                </h3>
+                <p style="font-size: 13px; color: var(--muted); margin-bottom: 12px;">Sistem tarafından el konulan hesaplar ve güvenlik ihlalleri burada görünür.</p>
+                <div id="securityAlertsList"></div>
+                
+                <!-- Quartz Founder Create -->
+                <div id="createFounderSection" class="hidden" style="margin-top:16px; border-top:1px solid rgba(255,255,255,0.1); padding-top:16px;">
+                  <h4 style="color:var(--accent); font-size:14px; margin-bottom:8px;">Yeni Kurucu Ekle (Sadece Quartz)</h4>
+                  <div style="display:flex; gap:8px; flex-wrap:wrap;">
+                    <input id="newFounderName" placeholder="Kullanıcı Adı" style="flex:1; min-width:120px;">
+                    <input id="newFounderPass" placeholder="Şifre" style="flex:1; min-width:120px;">
+                    <button id="createFounderBtn" class="btn btnPrimary" style="padding:8px 16px;">Ekle</button>
+                  </div>
+                </div>
+              </div>
+
+              <div style="display: flex; flex-wrap: wrap; gap: 10px; justify-content: space-between; align-items: center; margin-bottom: 20px; padding: 16px; background: rgba(255,255,255,0.03); border-radius: 12px; border: 1px solid var(--border);">
+                <div>
+                  <strong style="display:block; font-size:15px;">Bakım Modu</strong>
+                  <span style="font-size:12px; color:var(--muted); display:block; max-width:200px;">Aktif edilirse kurucular hariç kimse giriş yapamaz.</span>
+                </div>
+                <label class="checkboxRow" style="margin:0;"><input type="checkbox" id="maintenanceToggle"> <span style="margin-left:8px">Aktif</span></label>
+              </div>
+
+              <!-- Kara Liste Yönetimi -->
+              <div class="sectionCard">
+                <h3>🚫 HWID Kara Liste (Blacklist)</h3>
+                <div style="display:flex; gap:8px; margin-bottom:12px;">
+                  <input id="banHwidInput" placeholder="Yasaklanacak HWID" style="flex:2;">
+                  <input id="banReasonInput" placeholder="Sebep (Opsiyonel)" style="flex:1;">
+                  <button id="banBtn" class="btn btn-danger">Yasakla</button>
+                </div>
+                <div id="blacklistContainer" class="usersList" style="max-height:200px;"></div>
+              </div>
+
+              <h3>Sistem Yönetimi</h3>
+              <div class="formGrid" style="grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));">
+                <div class="statCard" style="background: rgba(255,255,255,0.03);">
+                  <span class="statLabel">Süresi Dolan Keyler</span>
+                  <div style="display:flex; justify-content:space-between; align-items:center; margin-top:8px">
+                    <span id="expiredCount" class="statValue" style="font-size:20px">0</span>
+                    <button id="cleanExpiredBtn" class="btn btnGhost" style="font-size:12px; padding:6px 12px; border-color:var(--danger); color:var(--danger)">🧹 Temizle</button>
+                  </div>
+                </div>
+                <div class="statCard" style="background: rgba(255,255,255,0.03);">
+                  <span class="statLabel">Toplam Kullanıcı</span>
+                  <span id="totalUsersCount" class="statValue" style="font-size:20px">0</span>
+                </div>
+                <div class="statCard" style="background: rgba(255,255,255,0.03);">
+                  <span class="statLabel">Hile Durumu Yönetimi</span>
+                  <div class="status-selector">
+                    <label class="status-option safe">
+                      <input type="radio" name="cheatStatus" value="SAFE">
+                      <span class="status-box"><span style="font-size:18px">🟢</span>GÜVENLİ</span>
+                    </label>
+                    <label class="status-option risk">
+                      <input type="radio" name="cheatStatus" value="RISK">
+                      <span class="status-box"><span style="font-size:18px">🟡</span>RİSKLİ</span>
+                    </label>
+                    <label class="status-option update">
+                      <input type="radio" name="cheatStatus" value="UPDATE">
+                      <span class="status-box"><span style="font-size:18px">🟠</span>GÜNCELLENİYOR</span>
+                    </label>
+                    <label class="status-option detected">
+                      <input type="radio" name="cheatStatus" value="DETECTED">
+                      <span class="status-box"><span style="font-size:18px">🔴</span>TESPİT</span>
+                    </label>
+                  </div>
+                  <button id="updateStatusBtn" class="btn btnPrimary" style="width:100%">Durumu Güncelle</button>
+                </div>
+                <div class="statCard" style="background: rgba(255,255,255,0.03);">
+                  <span class="statLabel">Duyuru Metni</span>
+                  <div style="display:flex; gap:8px; margin-top:8px;">
+                    <input id="announceInput" type="text" placeholder="Duyuru yaz..." style="font-size:13px;">
+                    <button id="saveAnnounceBtn" class="btn btnGhost">Kaydet</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <section class="panelContent founderPanel" id="tab-logs">
+            <div class="sectionCard">
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
+                <h3>Sistem Logları (Son 200 İşlem)</h3>
+                <div style="display:flex; gap:8px;">
+                  <button id="clearLogsBtn" class="btn btnGhost" style="padding:6px 10px; font-size:12px; color:var(--danger); border-color:var(--danger);">🗑️ Temizle</button>
+                  <button id="copyLogsBtn" class="btn btnGhost" style="padding:6px 10px; font-size:12px;">📋 Kopyala</button>
+                  <input type="text" id="logSearchInput" placeholder="Loglarda ara..." style="width:200px; padding:6px 10px; font-size:13px; background:var(--bg); border:1px solid var(--border); border-radius:6px;">
+                </div>
+              </div>
+              <div id="logsList" class="usersList" style="max-height: 500px;"></div>
+            </div>
+          </section>
+        </main>
+      </div>
+    </div>
+
+    <!-- Ayarlar Modalı -->
+    <div id="settingsModal" class="modal-overlay hidden">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3>Panel Ayarları</h3>
+          <button id="closeSettingsBtn" class="btn btnGhost" style="padding:4px 8px;">✕</button>
+        </div>
+        <div class="modal-body">
+          <div class="setting-group">
+            <label>Tema Rengi</label>
+            <div class="color-swatches">
+              <div class="swatch" style="--c:#10b981" data-color="#10b981"></div> <!-- Yeşil (Default) -->
+              <div class="swatch" style="--c:#3b82f6" data-color="#3b82f6"></div> <!-- Mavi -->
+              <div class="swatch" style="--c:#8b5cf6" data-color="#8b5cf6"></div> <!-- Mor -->
+              <div class="swatch" style="--c:#ef4444" data-color="#ef4444"></div> <!-- Kırmızı -->
+              <div class="swatch" style="--c:#f59e0b" data-color="#f59e0b"></div> <!-- Turuncu -->
+              <div class="swatch" style="--c:#06b6d4" data-color="#06b6d4"></div> <!-- Turkuaz -->
+              <div class="swatch" style="--c:#ec4899" data-color="#ec4899"></div> <!-- Pembe -->
+            </div>
+          </div>
+          <div class="setting-group">
+            <label>Ses Efektleri</label>
+            <div class="checkboxRow">
+              <input type="checkbox" id="soundToggle" checked> <span>Arayüz seslerini aç</span>
+            </div>
+            <div class="checkboxRow">
+              <input type="checkbox" id="lowPerfToggle"> <span>Düşük Performans Modu (Hızlı)</span>
+            </div>
+          </div>
+          <div class="setting-group founderOnly">
+            <label>Discord Webhook URL</label>
+            <div style="display:flex; gap:8px;"><input id="discordWebhookInput" placeholder="https://discord.com/api/webhooks/..." style="margin:0;"><button id="testWebhookBtn" class="btn btnGhost" style="padding:8px;">Test</button><button id="saveWebhookBtn" class="btn btnPrimary" style="padding:8px;">Kaydet</button></div>
+          </div>
+          <div class="setting-group founderOnly" style="border-top:1px solid var(--border); padding-top:16px;">
+            <label>Veritabanı İşlemleri</label>
+            <div style="display:flex; gap:10px;">
+              <button id="backupBtn" class="btn btnGhost" style="flex:1;">📥 Yedek İndir</button>
+              <button id="restoreBtn" class="btn btnGhost" style="flex:1; border-color:var(--danger); color:var(--danger);">📤 Geri Yükle</button>
+              <input type="file" id="restoreInput" accept=".json" style="display:none;">
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Confetti Library -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <!-- Chart.js Library -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="/app.js"></script>
+    <script>
+      // Giriş ekranı animasyonları
+      document.addEventListener('DOMContentLoaded', () => {
+        // Sadece giriş ekranındaysak çalıştır
+        const loginScreen = document.getElementById('loginCard');
+        if (loginScreen && !loginScreen.classList.contains('hidden')) {
+          // Konfeti Patlat (Daha profesyonel)
+          const duration = 3000;
+          const end = Date.now() + duration;
+
+          (function frame() {
+            confetti({ 
+              particleCount: 3, 
+              angle: 60, 
+              spread: 55, 
+              origin: { x: 0 }, 
+              colors: ['#10b981', '#34d399', '#059669', '#ffffff'] 
+            });
+            confetti({ 
+              particleCount: 3, 
+              angle: 120, 
+              spread: 55, 
+              origin: { x: 1 }, 
+              colors: ['#10b981', '#34d399', '#059669', '#ffffff'] 
+            });
+
+            if (Date.now() < end) {
+              requestAnimationFrame(frame);
+            }
+          }());
+        }
+      });
+    </script>
+  </body>
+</html>
