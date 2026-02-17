@@ -211,18 +211,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true })); // C++ Loaderlar için form-data desteği
 
 // --- STATİK DOSYA AYARLARI (KESİN ÇÖZÜM) ---
-let publicPath = path.join(process.cwd(), 'public');
-
-// Eğer process.cwd() içinde yoksa __dirname dene (Vercel için)
-if (!fs.existsSync(publicPath)) {
-  publicPath = path.join(__dirname, 'public');
-}
-
-// Hala yoksa bir üst dizine bak
-if (!fs.existsSync(publicPath)) {
-  publicPath = path.join(process.cwd(), '..', 'public');
-}
-
+let publicPath = path.join(__dirname, 'public');
 console.log('[SERVER] Public path set to:', publicPath); // Loglara yaz
 app.use(express.static(publicPath));
 
@@ -231,10 +220,22 @@ app.get('/', (req, res) => {
   if (fs.existsSync(indexPath)) {
     res.sendFile(indexPath);
   } else {
+    // Debug: Klasör içeriğini listele
+    let debugInfo = '';
+    try {
+      const rootFiles = fs.readdirSync(process.cwd());
+      debugInfo += `<p><strong>Mevcut Dizin (${process.cwd()}) Dosyaları:</strong><br>${rootFiles.join(', ')}</p>`;
+      const dirFiles = fs.readdirSync(__dirname);
+      debugInfo += `<p><strong>__dirname (${__dirname}) Dosyaları:</strong><br>${dirFiles.join(', ')}</p>`;
+    } catch (e) { debugInfo += `<p>Hata: ${e.message}</p>`; }
+
     res.status(404).send(`
-      <h1>Hata: Arayüz Bulunamadı</h1>
+      <style>body{font-family:sans-serif;padding:20px;line-height:1.6}</style>
+      <h1>⚠️ Dosya Bulunamadı</h1>
       <p>Sunucu çalışıyor ama 'index.html' dosyası yok.</p>
-      <p>Aranan yol: ${publicPath}</p>
+      <p><strong>Aranan yol:</strong> ${publicPath}</p>
+      <hr>
+      ${debugInfo}
     `);
   }
 });
