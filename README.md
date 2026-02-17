@@ -25,18 +25,27 @@ Notlar:
 
 ## Yayına Alma (Deployment)
 
-### 🌍 DÜNYAYA AÇILMA (Herkese Açık Link)
+### 🚀 EN KOLAY YÖNTEM: NGROK (Terminalden Link Alma)
+### 🌍 KALICI VE ÜCRETSİZ YÖNTEM: RENDER.COM
 
-Bu panel `db.json` dosyasını veritabanı olarak kullandığı için, verilerin silinmemesi adına **kendi bilgisayarınızda** çalıştırıp `ngrok` ile dışarı açmanız en iyi yöntemdir.
+Vercel gibi servislerle uğraşmadan, kendi bilgisayarındaki siteyi anında internete açmak için:
+Vercel'in dosya hatalarıyla uğraşmadan, sitenizi 7/24 açık tutmak için en iyi yöntem **Render** kullanmaktır.
 
-**Adım 1: Sunucuyu Başlatın**
-- Klasördeki `baslat.bat` dosyasına çift tıklayın.
-
-**Adım 2: Link Oluşturun**
-- Yeni bir terminal (CMD veya PowerShell) açın.
-- Şu komutu yapıştırıp Enter'a basın:
+1. Terminalde `npm start` yazıp sunucuyu başlat.
+2. Yeni bir terminal aç ve şu komutu yaz:
   ```powershell
   npx ngrok http 3000
   ```
 - Ekranda çıkan `Forwarding` karşısındaki `https://....ngrok-free.app` linkini kopyalayın.
 - **Bu linki kime atarsanız atın, panelinize girebilir!** (Bilgisayarınız açık olduğu sürece).
+1. Kodlarınızı **GitHub**'a yükleyin.
+2. **render.com** adresine gidip üye olun.
+3. **"New + "** butonuna basıp **"Web Service"** seçin.
+4. GitHub reponuzu bağlayın.
+5. Ayarları şöyle yapın:
+   - **Build Command:** `npm install`
+   - **Start Command:** `npm start`
+6. **Environment Variables** kısmına MongoDB linkinizi ekleyin:
+   - Key: `MONGODB_URI`
+   - Value: `mongodb+srv://...` (Linkiniz)
+7. **Create Web Service** butonuna basın. Bitti!

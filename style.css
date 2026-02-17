@@ -970,6 +970,7 @@ body.neon-mode {
     justify-content: center;
     align-items: center;
     z-index: 999;
+}
 body.neon-mode .loginBg {
   background: linear-gradient(135deg, #0f0518 0%, #2e1065 100%);
 }

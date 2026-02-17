@@ -212,7 +212,10 @@ app.use(express.urlencoded({ extended: true })); // C++ Loaderlar için form-dat
 
 // --- STATİK DOSYA AYARLARI (KESİN ÇÖZÜM) ---
 let publicPath = path.join(__dirname, 'public');
-console.log('[SERVER] Public path set to:', publicPath); // Loglara yaz
+if (!fs.existsSync(publicPath)) {
+  publicPath = path.join(process.cwd(), 'public');
+}
+console.log('[SERVER] Public path set to:', publicPath);
 app.use(express.static(publicPath));
 
 app.get('/', (req, res) => {
